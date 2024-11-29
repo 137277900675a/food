@@ -41,7 +41,6 @@ export default {
       captcha: "",
       captchaChars: "",
       captchaImage: "",
-      // 读取localStorage中的用户数据
       users: JSON.parse(localStorage.getItem("users") || "[]"),
     };
   },
@@ -61,18 +60,14 @@ export default {
     },
     loginBrungle() {
       if (this.username && this.password) {
-        // 在本地存储中查找用户名和密码是否匹配
         const user = this.users.find(
           (user) =>
             user.username === this.username && user.password === this.password
         );
-
-        // 判断是否找到了匹配的用户
         if (user) {
-          // 判断输入的验证码是否正确，忽略大小写
           if (this.captcha === this.captchaChars.toLowerCase()) {
+            localStorage.setItem("user", JSON.stringify(user)); // 保存用户信息
             alert("登录成功");
-            // 登录成功后跳转到首页
             this.$router.push("/index");
           } else {
             alert("验证码错误");
@@ -107,9 +102,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url("../img/bg.png");
   background-size: cover;
   background-position: center;
+  background-image: url("../img/bg.png"); /* 默认背景图 */
 }
 
 .title {

@@ -6,14 +6,32 @@
       <ul class="nav-links">
         <li><router-link to="/index">首页</router-link></li>
         <li><router-link to="#">每日随机选菜</router-link></li>
-        <li><router-link to="/">登录</router-link></li>
+        <li v-if="isLoggedIn">
+          <div class="avatar-container">
+            <img
+              :src="avatarUrl"
+              alt="Avatar"
+              class="avatar"
+              @click="toggleDropdown"
+            />
+            <div v-if="showDropdown" class="dropdown">
+              <ul>
+                <li @click="goToProfile">个人信息</li>
+                <li @click="goToSettings">设置</li>
+                <li @click="logout">注销</li>
+              </ul>
+            </div>
+          </div>
+        </li>
+        <li v-if="!isLoggedIn">
+          <router-link to="/">登录</router-link>
+        </li>
       </ul>
     </div>
 
     <!-- 轮播图 -->
     <div class="carousel">
       <div class="carousel-images">
-        <!-- 根据 currentIndex 来显示对应的图片 -->
         <div class="carousel-item">
           <img
             :src="images[currentIndex]"
@@ -23,7 +41,6 @@
         </div>
       </div>
 
-      <!-- 按钮控制显示不同的图片 -->
       <div class="carousel-buttons">
         <button
           v-for="(item, index) in images"
@@ -47,9 +64,7 @@
         <div class="food-card">
           <img src="../img/banner2.jpg" alt="food 2" />
           <p>小酥肉</p>
-          <p>
-            嫩脆可口，香而不腻，山西省的传统名菜之一味道独特，深受食客们的喜爱
-          </p>
+          <p>山西省的传统名菜之一，味道独特，深受食客们的喜爱。</p>
         </div>
         <div class="food-card">
           <img src="../img/banner3.jpg" alt="food 3" />
@@ -73,13 +88,13 @@
           <div class="hot-tag">热门</div>
           <img src="../img/2.jpg" alt="food 2" />
           <p>眉山东坡肉</p>
-          <p>这道菜肉质细嫩、香气浓郁，入口即化，让人回味无穷。</p>
+          <p>肉质细嫩、香气浓郁，入口即化。</p>
         </div>
         <div class="food-card hot-card">
           <div class="hot-tag">热门</div>
           <img src="../img/3.jpg" alt="food 3" />
           <p>宫保鸡丁</p>
-          <p>曾被封为“太子少保”，满汉全席名菜之一</p>
+          <p>曾被封为“太子少保”，满汉全席名菜之一。</p>
         </div>
       </div>
     </div>
@@ -97,31 +112,98 @@ export default {
     return {
       images: [img1, img2, img3],
       currentIndex: 0,
-      slideInterval: null, // 用来存储自动切换的定时器
+      slideInterval: null,
+      isLoggedIn: false,
+      avatarUrl: "../img/yier.png",
+      showDropdown: false,
     };
   },
   mounted() {
-    this.startAutoSlide(); // 组件挂载时启动自动轮播
+    document.body.style.background =
+      "url('../img/1.jpg') no-repeat center center fixed";
+    document.body.style.backgroundSize = "cover";
+    this.startAutoSlide();
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.avatar) {
+      this.isLoggedIn = true;
+      this.avatarUrl = user.avatar;
+    }
   },
   beforeDestroy() {
+    document.body.style.background = "";
     if (this.slideInterval) {
-      clearInterval(this.slideInterval); // 组件销毁时清除定时器
+      clearInterval(this.slideInterval);
     }
   },
   methods: {
     goToSlide(index) {
-      this.currentIndex = index; // 切换到指定的图片
+      this.currentIndex = index;
     },
     startAutoSlide() {
       this.slideInterval = setInterval(() => {
-        this.currentIndex = (this.currentIndex + 1) % this.images.length; // 自动切换图片
-      }, 3000); // 每3秒切换一次
+        this.currentIndex = (this.currentIndex + 1) % this.images.length;
+      }, 3000);
+    },
+    toggleDropdown() {
+      this.showDropdown = !this.showDropdown;
+    },
+    goToProfile() {
+      alert("跳转到个人信息页面");
+      this.$router.push("/profile");
+    },
+    goToSettings() {
+      alert("跳转到设置页面");
+    },
+    logout() {
+      localStorage.removeItem("user");
+      this.isLoggedIn = false;
+      this.avatarUrl = "../img/default-avatar.png";
+      this.showDropdown = false;
+      this.$router.push("/");
     },
   },
 };
 </script>
 
 <style scoped>
+/* 导航栏头像样式 */
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+}
+.avatar-container {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 150px;
+}
+
+.dropdown ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.dropdown ul li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.dropdown ul li:hover {
+  background-color: #f0f0f0;
+}
+
 /* 页面整体布局 */
 #app {
   display: flex;
@@ -129,30 +211,22 @@ export default {
   align-items: center;
   font-family: Arial, sans-serif;
   min-height: 100vh;
-  padding-top: 20px; /* 留出空间给导航栏 */
+  padding-top: 20px;
 }
 
 /* 导航栏样式 */
 .navbar {
-  position: fixed; /* 固定在顶部 */
+  position: fixed;
   top: 0;
   left: 0;
-  width: 100%; /* 横向铺满 */
+  width: 100%;
   background-color: rgb(254, 254, 254);
   padding: 15px 20px;
   color: rgb(11, 3, 3);
-  z-index: 1000; /* 确保导航栏在最上层 */
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-sizing: border-box;
-}
-
-/* 自适应 logo 样式 */
-.navbar .logo img {
-  max-width: 100%; /* 限制图片最大宽度为容器的100% */
-  height: auto; /* 高度自动调整以保持比例 */
-  max-height: 50px; /* 设置最大高度以避免撑开导航栏 */
 }
 
 .nav-links {
@@ -162,27 +236,24 @@ export default {
 }
 
 .nav-links li {
-  font-size: 1.2rem; /* 自适应字体 */
-  padding: 10px 15px; /* 为 li 添加内边距，增加点击区域 */
-  border-radius: 5px; /* 圆角效果 */
-  transition: background-color 0.3s ease; /* 平滑过渡效果 */
+  font-size: 1.2rem;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
 }
 
 .nav-links li:hover {
-  background-color: #ff6347; /* 设置整个标签项悬停时的背景颜色 */
+  background-color: #ff6347;
 }
 
 .nav-links li a {
   color: rgb(21, 9, 9);
   text-decoration: none;
-  display: block; /* 将 a 标签变为块级元素，使得整个 li 都可以点击 */
-  width: 100%; /* 确保 a 标签占满 li 的宽度 */
-  height: 100%; /* 确保 a 标签占满 li 的高度 */
-  padding: 0; /* 去除 a 标签的内边距 */
+  display: block;
 }
 
 .nav-links li a:hover {
-  color: white; /* 改变文字颜色为白色 */
+  color: white;
 }
 
 /* 轮播图样式 */
@@ -192,7 +263,7 @@ export default {
   height: 400px;
   overflow: hidden;
   text-align: center;
-  margin-top: 60px; /* 防止被固定导航栏遮挡 */
+  margin-top: 60px;
 }
 
 .carousel-images {
@@ -213,7 +284,6 @@ export default {
   object-fit: cover;
 }
 
-/* 按钮样式 */
 .carousel-buttons {
   margin-top: 20px;
 }

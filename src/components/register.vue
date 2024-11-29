@@ -12,6 +12,11 @@
         <input v-model="newPassword" type="password" required />
         <label>密码</label>
       </div>
+      <div class="input-box">
+        <i class="fas fa-image icon"></i>
+        <input type="file" @change="handleFileUpload" />
+        <label>上传头像</label>
+      </div>
       <button type="submit" class="btn">注册</button>
       <div class="signup-link">
         <p>已有账号? <router-link to="/">请登录。</router-link></p>
@@ -26,43 +31,32 @@ export default {
     return {
       newUsername: "",
       newPassword: "",
-      // 从 localStorage 获取存储的用户数据（如果有的话）
+      avatarUrl: "../img/default-avatar.png", // 默认头像
       users: JSON.parse(localStorage.getItem("users") || "[]"),
     };
   },
-  created() {
-    // 添加预设的已注册账号
-    const defaultUser = { username: "0120230291", password: "LWY03150415" };
-
-    if (!this.users.some((user) => user.username === defaultUser.username)) {
-      this.users.push(defaultUser);
-      localStorage.setItem("users", JSON.stringify(this.users));
-    }
-  },
   methods: {
+    handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.avatarUrl = URL.createObjectURL(file); // 显示上传的头像
+      }
+    },
     registerUser() {
       if (this.newUsername && this.newPassword) {
-        // 检查用户名是否已存在
         const existingUser = this.users.find(
           (user) => user.username === this.newUsername
         );
         if (existingUser) {
           alert("用户名已存在，请选择另一个用户名。");
         } else {
-          // 添加新用户到用户列表中
           this.users.push({
             username: this.newUsername,
             password: this.newPassword,
+            avatar: this.avatarUrl, // 保存头像信息
           });
-
-          // 将更新后的用户列表存入 localStorage
           localStorage.setItem("users", JSON.stringify(this.users));
-
           alert("注册成功！");
-          this.newUsername = "";
-          this.newPassword = "";
-
-          // 跳转到首页
           this.$router.push("/");
         }
       } else {
