@@ -60,29 +60,29 @@ export default {
       showDropdown: false,
       foods: [
         {
-          name: "麻辣火锅",
+          name: "麻婆豆腐",
           image: img1,
-          description: "麻辣火锅，辣味十足，吃了让你欲罢不能！",
+          description: "麻辣咸香，辣味十足，吃了让你欲罢不能！",
         },
         {
-          name: "寿司",
+          name: "酱烤鸡腿",
           image: img2,
-          description: "新鲜的寿司，口感细腻，令人陶醉。",
+          description: "香醇浓郁，肉质鲜嫩，让你回味无穷！",
         },
         {
-          name: "炸鸡",
+          name: "宫保鸡丁",
           image: img3,
-          description: "外酥里嫩的炸鸡，绝对是你的最爱！",
+          description: "口感鲜美，鸡肉鲜嫩，宫保酱香四溢！",
         },
         {
-          name: "披萨",
+          name: "三明治",
           image: img4,
-          description: "美味的披萨，丰富的配料让你欲罢不能。",
+          description: "健康美味，口感丰富，让你爱不释口！",
         },
         {
-          name: "冰淇淋",
+          name: "黑椒鸡排",
           image: img5,
-          description: "清凉的冰淇淋，夏天的最佳选择。",
+          description: "香脆多汁，口感鲜美，让你欲罢不能！",
         },
         {
           name: "牛排",
@@ -90,14 +90,14 @@ export default {
           description: "多汁的牛排，肉质鲜嫩，令人垂涎。",
         },
         {
-          name: "沙拉",
+          name: "孜然猪肉",
           image: img7,
-          description: "新鲜的沙拉，健康又美味。",
+          description: "香辣可口，肉质鲜嫩，让人回味无穷。",
         },
         {
-          name: "煎饺",
+          name: "春卷",
           image: img8,
-          description: "香脆的煎饺，搭配酱油更美味。",
+          description: "外皮酥脆，馅料丰富，口感鲜美。",
         },
         {
           name: "蛋糕",
