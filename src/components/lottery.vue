@@ -108,6 +108,13 @@ export default {
       selectedFood: null,
     };
   },
+  mounted() {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user && user.avatar) {
+      this.isLoggedIn = true;
+      this.avatarUrl = user.avatar;
+    }
+  },
   methods: {
     pickRandomFood() {
       const randomIndex = Math.floor(Math.random() * this.foods.length);
