@@ -5,6 +5,7 @@ const routes = [
   { path: "/register", component: () => import("../components/register.vue") }, // 注册页面
   { path: "/index", component: () => import("../components/index.vue") }, // 首页
   { path: "/profile", component: () => import("../components/self_info.vue") }, // 个人信息
+  { path: "/lottery", component: () => import("../components/lottery.vue") }, //抽奖页面
 ];
 
 const router = createRouter({

@@ -5,7 +5,7 @@
       <div class="logo"><img src="../img/image.png" alt="logo" /></div>
       <ul class="nav-links">
         <li><router-link to="/index">首页</router-link></li>
-        <li><router-link to="#">每日随机选菜</router-link></li>
+        <li><router-link to="/lottery">每日随机选菜</router-link></li>
         <li v-if="isLoggedIn">
           <div class="avatar-container" @click="editAvatar">
             <img
@@ -146,7 +146,7 @@ export default {
       username: "",
       email: "",
       phone: "",
-      avatarUrl: "../img/yier.png", // Default avatar URL
+      avatarUrl: "../img/yier.png", // 默认的avatar路径
       isEditing: false,
       isLoggedIn: false,
       showDropdown: false,
@@ -278,7 +278,7 @@ export default {
   font-family: Arial, sans-serif;
   padding: 20px;
   text-align: center;
-  padding-top: 100px; /* Adjusted padding-top to ensure space for navbar */
+  padding-top: 100px; 
 }
 
 /* 导航栏样式 */

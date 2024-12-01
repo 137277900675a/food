@@ -5,7 +5,7 @@
       <div class="logo"><img src="../img/image.png" alt="logo" /></div>
       <ul class="nav-links">
         <li><router-link to="/index">首页</router-link></li>
-        <li><router-link to="#">每日随机选菜</router-link></li>
+        <li><router-link to="/lottery">每日随机选菜</router-link></li>
         <li v-if="isLoggedIn">
           <div class="avatar-container">
             <img
