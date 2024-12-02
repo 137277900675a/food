@@ -14,7 +14,13 @@
               class="avatar"
               @click.stop="toggleDropdown"
             />
-            <input type="file" ref="fileInput" @change="onFileChange" accept="image/*" style="display: none;" />
+            <input
+              type="file"
+              ref="fileInput"
+              @change="onFileChange"
+              accept="image/*"
+              style="display: none"
+            />
             <div v-if="showDropdown" class="dropdown">
               <ul>
                 <li @click="goToProfile">个人信息</li>
@@ -151,7 +157,6 @@ export default {
       isEditing: false,
       isLoggedIn: false,
       showDropdown: false,
-      // New fields
       gender: "",
       age: "",
       region: "",
@@ -169,7 +174,6 @@ export default {
       this.email = user.email;
       this.phone = user.phone;
       this.avatarUrl = user.avatar || "../img/default-avatar.png";
-      // New field assignments
       this.gender = user.gender;
       this.age = user.age;
       this.region = user.region;
@@ -284,7 +288,7 @@ export default {
   font-family: Arial, sans-serif;
   padding: 20px;
   text-align: center;
-  padding-top: 100px; 
+  padding-top: 100px;
 }
 
 /* 导航栏样式 */
