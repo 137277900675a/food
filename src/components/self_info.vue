@@ -14,6 +14,7 @@
               class="avatar"
               @click.stop="toggleDropdown"
             />
+            <input type="file" ref="fileInput" @change="onFileChange" accept="image/*" style="display: none;" />
             <div v-if="showDropdown" class="dropdown">
               <ul>
                 <li @click="goToProfile">个人信息</li>
@@ -217,12 +218,17 @@ export default {
       alert("跳转到设置页面");
     },
     editAvatar() {
-      const newAvatar = prompt("请输入新头像的图片URL：");
-      if (newAvatar) {
-        this.avatarUrl = newAvatar;
-        const updatedUser = JSON.parse(localStorage.getItem("user"));
-        updatedUser.avatar = newAvatar;
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+      // 触发文件选择
+      this.$refs.fileInput.click();
+    },
+    onFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          this.avatarUrl = e.target.result; // 更新头像URL
+        };
+        reader.readAsDataURL(file); // 读取文件为Data URL
       }
     },
   },
