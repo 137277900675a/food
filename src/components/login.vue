@@ -65,7 +65,7 @@ export default {
             user.username === this.username && user.password === this.password
         );
         if (user) {
-          if (this.captcha === this.captchaChars.toLowerCase()) {
+          if (this.captcha.toLowerCase() === this.captchaChars.toLowerCase()) {
             localStorage.setItem("user", JSON.stringify(user)); // 保存用户信息
             alert("登录成功");
             this.$router.push("/index");
