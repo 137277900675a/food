@@ -108,12 +108,10 @@
   </div>
 </template>
 <script>
-// 引入图片资源
 import img1 from "../img/5.jpg";
 import img2 from "../img/7.jpg";
 import img3 from "../img/6.jpg";
-import "echarts-liquidfill"; // 引入液体填充效果
-import * as echarts from "echarts";
+import "../assets/EChartComponent.js"; // 引入液体填充效果
 
 // 随机生成排行榜数据
 function generateRandomData() {
@@ -132,28 +130,26 @@ export default {
   name: "HomePage",
   data() {
     return {
-      images: [img1, img2, img3], // 轮播图的图片
-      currentIndex: 0, // 当前轮播图索引
-      slideInterval: null, // 轮播定时器
-      isLoggedIn: false, // 登录状态
-      avatarUrl: "../img/yier.png", // 用户头像
-      showDropdown: false, // 显示/隐藏下拉菜单
-      dailyFoodRanking: generateRandomData(), // 每日美食排行榜数据
+      images: [img1, img2, img3],
+      currentIndex: 0,
+      slideInterval: null,
+      isLoggedIn: false,
+      avatarUrl: "../img/yier.png",
+      showDropdown: false,
+      dailyFoodRanking: generateRandomData(),
     };
   },
   mounted() {
-    // 设置背景图片
     document.body.style.background =
       "url('../img/1.jpg') no-repeat center center fixed";
     document.body.style.backgroundSize = "cover";
-
-    // 开启自动轮播
     this.startAutoSlide();
 
-    // 创建EChart图表
-    this.createEChart();
+    // 动态导入 EChartComponent
+    import("../assets/EChartComponent.js").then((module) => {
+      module.createEChart("echartRanking", this.dailyFoodRanking);
+    });
 
-    // 检查用户登录状态
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.avatar) {
       this.isLoggedIn = true;
@@ -161,97 +157,36 @@ export default {
     }
   },
   beforeDestroy() {
-    // 清理定时器和背景设置
     document.body.style.background = "";
     if (this.slideInterval) {
       clearInterval(this.slideInterval);
     }
   },
   methods: {
-    // 跳转到指定的轮播图
     goToSlide(index) {
       this.currentIndex = index;
     },
-    // 启动自动轮播
     startAutoSlide() {
       this.slideInterval = setInterval(() => {
         this.currentIndex = (this.currentIndex + 1) % this.images.length;
-      }, 3000); // 每3秒切换一次
+      }, 3000);
     },
-    // 切换显示下拉菜单
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
-    // 跳转到个人信息页面
     goToProfile() {
       alert("跳转到个人信息页面");
-      this.$router.push("/profile");
+      this.$router.push("/self");
     },
-    // 跳转到设置页面
     goToSettings() {
       alert("跳转到设置页面");
     },
-    // 注销用户
     logout() {
       localStorage.removeItem("user");
       this.isLoggedIn = false;
       this.avatarUrl = "../img/default-avatar.png";
       this.showDropdown = false;
-      this.$router.push("/"); // 跳转到首页
-    },
-    // 创建 EChart 图表
-    createEChart() {
-      const chartDom = document.getElementById("echartRanking");
-      const myChart = echarts.init(chartDom);
-
-      const option = {
-        title: {
-          left: "center",
-          top: "10px",
-          textStyle: {
-            fontSize: 24,
-            color: "#333",
-          },
-        },
-        tooltip: {},
-        xAxis: {
-          type: "category",
-          data: this.dailyFoodRanking.map((item) => item.name),
-          axisLabel: {
-            interval: 0,
-            rotate: 30, // 使标签倾斜
-          },
-        },
-        yAxis: {
-          type: "value",
-        },
-        series: [
-          {
-            data: this.dailyFoodRanking.map((item) => item.value),
-            type: "bar", // 使用条形图
-            itemStyle: {
-              normal: {
-                color: (params) => {
-                  const colorList = [
-                    "#FF6347",
-                    "#FFA07A",
-                    "#FFD700",
-                    "#8A2BE2",
-                    "#7FFF00",
-                    "#00BFFF",
-                    "#FF1493",
-                  ];
-                  return colorList[params.dataIndex % colorList.length];
-                },
-              },
-            },
-            animationDuration: 1500, // 动画持续时间
-          },
-        ],
-      };
-
-      myChart.setOption(option); // 设置图表配置项
-      window.addEventListener("resize", () => myChart.resize()); // 窗口大小变化时重新调整图表
+      this.$router.push("/");
     },
   },
 };

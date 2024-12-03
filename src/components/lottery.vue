@@ -43,79 +43,84 @@
 </template>
 
 <script>
-import img1 from "../img/1.jpg";
-import img2 from "../img/2.jpg";
-import img3 from "../img/3.jpg";
-import img4 from "../img/4.jpg";
-import img5 from "../img/5.jpg";
-import img6 from "../img/6.jpg";
-import img7 from "../img/7.jpg";
-import img8 from "../img/8.jpg";
-import img9 from "../img/9.jpg";
 export default {
   data() {
     return {
       isLoggedIn: false,
       avatarUrl: "../img/yier.png",
       showDropdown: false,
-      foods: [
-        {
-          name: "麻婆豆腐",
-          image: img1,
-          description: "麻辣咸香，辣味十足，吃了让你欲罢不能！",
-        },
-        {
-          name: "酱烤鸡腿",
-          image: img2,
-          description: "香醇浓郁，肉质鲜嫩，让你回味无穷！",
-        },
-        {
-          name: "宫保鸡丁",
-          image: img3,
-          description: "口感鲜美，鸡肉鲜嫩，宫保酱香四溢！",
-        },
-        {
-          name: "三明治",
-          image: img4,
-          description: "健康美味，口感丰富，让你爱不释口！",
-        },
-        {
-          name: "黑椒鸡排",
-          image: img5,
-          description: "香脆多汁，口感鲜美，让你欲罢不能！",
-        },
-        {
-          name: "牛排",
-          image: img6,
-          description: "多汁的牛排，肉质鲜嫩，令人垂涎。",
-        },
-        {
-          name: "孜然猪肉",
-          image: img7,
-          description: "香辣可口，肉质鲜嫩，让人回味无穷。",
-        },
-        {
-          name: "春卷",
-          image: img8,
-          description: "外皮酥脆，馅料丰富，口感鲜美。",
-        },
-        {
-          name: "蛋糕",
-          image: img9,
-          description: "绵密的蛋糕，甜蜜的享受。",
-        },
-      ],
+      foods: [],
       selectedFood: null,
     };
   },
-  mounted() {
+  async mounted() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user && user.avatar) {
       this.isLoggedIn = true;
       this.avatarUrl = user.avatar;
     }
+    await this.loadFoodImages();
   },
   methods: {
+    async loadFoodImages() {
+      const img1 = await import("../img/1.jpg");
+      const img2 = await import("../img/2.jpg");
+      const img3 = await import("../img/3.jpg");
+      const img4 = await import("../img/4.jpg");
+      const img5 = await import("../img/5.jpg");
+      const img6 = await import("../img/6.jpg");
+      const img7 = await import("../img/7.jpg");
+      const img8 = await import("../img/8.jpg");
+      const img9 = await import("../img/9.jpg");
+
+      this.foods = [
+        {
+          name: "麻婆豆腐",
+          image: img1.default,
+          description: "麻辣咸香，辣味十足，吃了让你欲罢不能！",
+        },
+        {
+          name: "酱烤鸡腿",
+          image: img2.default,
+          description: "香醇浓郁，肉质鲜嫩，让你回味无穷！",
+        },
+        {
+          name: "宫保鸡丁",
+          image: img3.default,
+          description: "口感鲜美，鸡肉鲜嫩，宫保酱香四溢！",
+        },
+        {
+          name: "三明治",
+          image: img4.default,
+          description: "健康美味，口感丰富，让你爱不释口！",
+        },
+        {
+          name: "黑椒鸡排",
+          image: img5.default,
+          description: "香脆多汁，口感鲜美，让你欲罢不能！",
+        },
+        {
+          name: "牛排",
+          image: img6.default,
+          description: "多汁的牛排，肉质鲜嫩，令人垂涎。",
+        },
+        {
+          name: "孜然猪肉",
+          image: img7.default,
+          description: "香辣可口，肉质鲜嫩，让人回味无穷。",
+        },
+        {
+          name: "春卷",
+          image: img8.default,
+          description: "外皮酥脆，馅料丰富，口感鲜美。",
+        },
+        {
+          name: "蛋糕",
+          image: img9.default,
+          description: "绵密的蛋糕，甜蜜的享受。",
+        },
+      ];
+    },
     pickRandomFood() {
       const randomIndex = Math.floor(Math.random() * this.foods.length);
       this.selectedFood = this.foods[randomIndex];
@@ -125,7 +130,7 @@ export default {
     },
     goToProfile() {
       alert("跳转到个人信息页面");
-      this.$router.push("/profile");
+      this.$router.push("/self");
     },
     goToSettings() {
       alert("跳转到设置页面");

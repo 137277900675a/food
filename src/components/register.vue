@@ -32,10 +32,20 @@ export default {
       newUsername: "",
       newPassword: "",
       avatarUrl: "../img/default-avatar.png", // 默认头像
-      users: JSON.parse(localStorage.getItem("users") || "[]"),
+      users: [],
     };
   },
+  created() {
+    this.loadUsers();
+  },
   methods: {
+    async loadUsers() {
+      // 动态导入 localStorage 相关的模块
+      const { getUsersFromLocalStorage } = await import(
+        "../data/localStorageUtils.js"
+      );
+      this.users = getUsersFromLocalStorage();
+    },
     handleFileUpload(event) {
       const file = event.target.files[0];
       if (file) {

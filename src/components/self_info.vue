@@ -24,7 +24,7 @@
             <div v-if="showDropdown" class="dropdown">
               <ul>
                 <li @click="goToProfile">个人信息</li>
-                <li @click="goToSettings">设置</li>
+                <li @click="() => {}">设置</li>
                 <li @click="logout">注销</li>
               </ul>
             </div>
@@ -47,89 +47,16 @@
 
     <!-- 用户详细信息表单 -->
     <form class="profile-info" @submit.prevent="saveProfile">
-      <div class="info-item">
-        <label for="username">用户名</label>
+      <div
+        class="info-item"
+        v-for="(field, index) in profileFields"
+        :key="index"
+      >
+        <label :for="field.id">{{ field.label }}</label>
         <input
-          v-model="username"
-          id="username"
-          type="text"
-          :readonly="!isEditing"
-        />
-      </div>
-
-      <div class="info-item">
-        <label for="email">电子邮箱</label>
-        <input v-model="email" id="email" type="email" :readonly="!isEditing" />
-      </div>
-
-      <div class="info-item">
-        <label for="phone">联系电话</label>
-        <input v-model="phone" id="phone" type="tel" :readonly="!isEditing" />
-      </div>
-
-      <!-- 新增性别信息 -->
-      <div class="info-item">
-        <label for="gender">性别</label>
-        <input
-          v-model="gender"
-          id="gender"
-          type="text"
-          :readonly="!isEditing"
-        />
-      </div>
-
-      <!-- 新增年龄信息 -->
-      <div class="info-item">
-        <label for="age">年龄</label>
-        <input v-model="age" id="age" type="number" :readonly="!isEditing" />
-      </div>
-
-      <!-- 新增地区信息 -->
-      <div class="info-item">
-        <label for="region">地区</label>
-        <input
-          v-model="region"
-          id="region"
-          type="text"
-          :readonly="!isEditing"
-        />
-      </div>
-
-      <!-- 新增职业信息 -->
-      <div class="info-item">
-        <label for="occupation">职业</label>
-        <input
-          v-model="occupation"
-          id="occupation"
-          type="text"
-          :readonly="!isEditing"
-        />
-      </div>
-
-      <!-- 新增兴趣爱好信息 -->
-      <div class="info-item">
-        <label for="hobby">兴趣爱好</label>
-        <input v-model="hobby" id="hobby" type="text" :readonly="!isEditing" />
-      </div>
-
-      <!-- 新增个性签名信息 -->
-      <div class="info-item">
-        <label for="signature">个性签名</label>
-        <input
-          v-model="signature"
-          id="signature"
-          type="text"
-          :readonly="!isEditing"
-        />
-      </div>
-
-      <!-- 新增注册日期信息 -->
-      <div class="info-item">
-        <label for="registerDate">注册日期</label>
-        <input
-          v-model="registerDate"
-          id="registerDate"
-          type="text"
+          v-model="field.value"
+          :id="field.id"
+          :type="field.type"
           :readonly="!isEditing"
         />
       </div>
@@ -150,57 +77,47 @@ export default {
   name: "Profile",
   data() {
     return {
-      username: "",
-      email: "",
-      phone: "",
       avatarUrl: "../img/yier.png", // 默认的avatar路径
       isEditing: false,
       isLoggedIn: false,
       showDropdown: false,
-      gender: "",
-      age: "",
-      region: "",
-      occupation: "",
-      hobby: "",
-      signature: "",
-      registerDate: "",
+      profileFields: [
+        { id: "username", label: "用户名", value: "", type: "text" },
+        { id: "email", label: "电子邮箱", value: "", type: "email" },
+        { id: "phone", label: "联系电话", value: "", type: "tel" },
+        { id: "gender", label: "性别", value: "", type: "text" },
+        { id: "age", label: "年龄", value: "", type: "number" },
+        { id: "region", label: "地区", value: "", type: "text" },
+        { id: "occupation", label: "职业", value: "", type: "text" },
+        { id: "hobby", label: "兴趣爱好", value: "", type: "text" },
+        { id: "signature", label: "个性签名", value: "", type: "text" },
+        { id: "registerDate", label: "注册日期", value: "", type: "text" },
+      ],
     };
   },
   mounted() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (user) {
-      this.isLoggedIn = true;
-      this.username = user.username;
-      this.email = user.email;
-      this.phone = user.phone;
-      this.avatarUrl = user.avatar || "../img/default-avatar.png";
-      this.gender = user.gender;
-      this.age = user.age;
-      this.region = user.region;
-      this.occupation = user.occupation;
-      this.hobby = user.hobby;
-      this.signature = user.signature;
-      this.registerDate = user.registerDate;
-    }
+    this.loadUserData();
   },
   methods: {
+    async loadUserData() {
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        this.isLoggedIn = true;
+        this.profileFields.forEach((field) => {
+          field.value = user[field.id] || "";
+        });
+        this.avatarUrl = user.avatar || "../img/default-avatar.png";
+      }
+    },
     editProfile() {
       this.isEditing = !this.isEditing;
     },
     saveProfile() {
-      const updatedUser = {
-        username: this.username,
-        email: this.email,
-        phone: this.phone,
-        avatar: this.avatarUrl,
-        gender: this.gender,
-        age: this.age,
-        region: this.region,
-        occupation: this.occupation,
-        hobby: this.hobby,
-        signature: this.signature,
-        registerDate: this.registerDate,
-      };
+      const updatedUser = {};
+      this.profileFields.forEach((field) => {
+        updatedUser[field.id] = field.value;
+      });
+      updatedUser.avatar = this.avatarUrl;
       localStorage.setItem("user", JSON.stringify(updatedUser));
       this.isEditing = false;
       alert("个人资料已保存！");
@@ -216,13 +133,9 @@ export default {
       this.$router.push("/");
     },
     goToProfile() {
-      this.$router.push("/profile");
-    },
-    goToSettings() {
-      alert("跳转到设置页面");
+      this.$router.push("/self");
     },
     editAvatar() {
-      // 触发文件选择
       this.$refs.fileInput.click();
     },
     onFileChange(event) {

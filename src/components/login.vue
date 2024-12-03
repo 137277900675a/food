@@ -41,10 +41,16 @@ export default {
       captcha: "",
       captchaChars: "",
       captchaImage: "",
-      users: JSON.parse(localStorage.getItem("users") || "[]"),
+      users: [],
     };
   },
   methods: {
+    async loadUsers() {
+      const { getUsersFromLocalStorage } = await import(
+        "../data/localStorageUtils.js"
+      );
+      this.users = getUsersFromLocalStorage();
+    },
     forgotman() {
       alert("忘记密码? 请联系管理员。");
     },
@@ -58,7 +64,7 @@ export default {
       this.captchaChars = captcha;
       this.captchaImage = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="40"><text x="10" y="30" font-family="Arial" font-size="24" fill="black">${captcha}</text></svg>`;
     },
-    loginBrungle() {
+    async loginBrungle() {
       if (this.username && this.password) {
         const user = this.users.find(
           (user) =>
@@ -81,6 +87,7 @@ export default {
     },
   },
   mounted() {
+    this.loadUsers(); // 加载用户数据
     this.generateCaptcha();
   },
 };
